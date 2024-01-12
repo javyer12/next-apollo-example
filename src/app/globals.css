@@ -28,3 +28,6 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+.search{
+  background-color: rgb(32,35,41);
+}
