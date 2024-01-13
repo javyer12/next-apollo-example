@@ -7,7 +7,7 @@ import {useState} from 'react';
 
 const query = gql`
   query {
-    characters(page: 1) {
+    characters {
       results {
         id
         name
@@ -18,13 +18,18 @@ const query = gql`
 `;
 export default function ClientPage() {
   const {data} = useSuspenseQuery(query);
-
-  const [filters,setFilters] = useState(data.characters.results);
-  console.log(filters)
-
-  // const handleFilter = filters.filter((character)=>{
-  //    setFilters(character.name == filters);
-  // })
+  const [results, setResults] = useState(data.characters.results);
+  const [search,setSearch] = useState('Rick Sanchez');
+  
+  const handleChange = (e)=>{
+    alert(e.target.value)
+  }
+  
+  function inputChange(){
+    let {matches} = results.filter((character)=> character.name == search);
+    console.log(matches)
+    setResults(matches.results)
+  }
   return (
     <div className=" p-4">
       <h1 className="text-center text-5xl">Rick and Morty Serie</h1>
@@ -34,15 +39,16 @@ export default function ClientPage() {
           type="text"
           className="w-full rounded m-4 h-10 text-black p-2"
           placeholder="Filter by Name"
-          onChange={setFilters()}
+          value={search}
+          onChange={handleChange}
         />
-        <button className="h-10 rounded bg-white text-black p-2 m-4 hover:bg-gray-900 hover:text-white">
+        <button onClick={inputChange} className="h-10 rounded bg-white text-black p-2 m-4 hover:bg-gray-900 hover:text-white">
           Search
         </button>
         </form>
 
       <div className="ml-0 bg-gradient-to-r mt-3 from-black-600 to-black-400 grid grid-cols-3">
-        {filters.map((character) => (
+        {results.map((character) => (
           <div className="m-2 bg-gray-900 p-3" key={character.id}>
             <h3 className="text-center ">{character.name} </h3>
             <img
